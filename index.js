@@ -1,8 +1,6 @@
 //Дана строка "Node.js course". Виведіть в консоль довжину цієї строки.
 
-const string = 'Node.js course';
-
-console.log('Node.js course: string length', string.length)
+console.log('Node.js course: string length', 'Node.js course'.length)
 
 /** Дано число 33. Напишіть функції що приймає на вхід дане число та видає це число
  помножене на 2 стільки разів, з скількох символів складається число.
