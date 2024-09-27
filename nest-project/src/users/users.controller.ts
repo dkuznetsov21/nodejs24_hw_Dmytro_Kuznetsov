@@ -19,22 +19,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id) {
+    return this.usersService.findOne(id);
   }
 
   @Put(':id')
-  updateUser(@Param('id', ParseIntPipe) id: string, @Body() replaceUserDto: ReplaceUserDto) {
-    return this.usersService.replace(+id, replaceUserDto);
+  updateUser(@Param('id', ParseIntPipe) id, @Body() replaceUserDto: ReplaceUserDto) {
+    return this.usersService.replace(id, replaceUserDto);
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  update(@Param('id', ParseIntPipe) id, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id) {
+    return this.usersService.remove(id);
   }
 }
