@@ -24,7 +24,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() replaceUserDto: ReplaceUserDto) {
+  updateUser(@Param('id', ParseIntPipe) id: string, @Body() replaceUserDto: ReplaceUserDto) {
     return this.usersService.replace(+id, replaceUserDto);
   }
 

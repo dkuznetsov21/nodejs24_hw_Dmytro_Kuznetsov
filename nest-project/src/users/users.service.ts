@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {IUser} from "./interfaces/user.interface";
@@ -28,7 +28,7 @@ export class UsersService {
         const user = this.users.find(user => user.id === id);
 
         if (!user) {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`User with id #${id} not found`);
         }
 
         return user;
@@ -38,7 +38,7 @@ export class UsersService {
         const userIndex = this.users.findIndex(user => user.id === id);
 
         if (userIndex === -1) {
-            throw new HttpException(`User with id #${id} not found`, HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`User with id #${id} not found`);
         }
 
         const updatedUser = {
@@ -55,7 +55,7 @@ export class UsersService {
         const userIndex = this.users.findIndex(user => user.id === id);
 
         if (userIndex === -1) {
-            throw new HttpException(`User with id #${id} not found`, HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`User with id #${id} not found`);
         }
 
         const updatedUser = {
@@ -72,7 +72,7 @@ export class UsersService {
         const userIndex = this.users.findIndex(user => user.id === id);
 
         if (userIndex === -1) {
-            throw new HttpException(`User with id #${id} not found`, HttpStatus.NOT_FOUND);
+            throw new NotFoundException(`User with id #${id} not found`);
         }
 
         this.users.splice(userIndex, 1);
