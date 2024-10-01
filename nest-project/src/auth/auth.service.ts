@@ -44,8 +44,10 @@ export class AuthService {
         });
 
         const tokens = await this.getTokens(newUser.id, firstName);
-        // await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+        await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+
         this.logger.log(`User with firstName: ${firstName} successfully signed up`);
+
         return tokens;
     }
 
