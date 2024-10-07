@@ -2,7 +2,6 @@ version: "3.7"
 
 services:
   db:
-    container_name: database
     image: mongo
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
@@ -16,26 +15,22 @@ services:
       - ./data:/data/db
 
   mongo-express:
-    container_name: mongo-express
     image: mongo-express
     depends_on:
       - db
     networks:
       - mongo-compose-network
     environment:
-      - ME_CONFIG_MONGODB_SERVER=database
+      - ME_CONFIG_MONGODB_SERVER=db  # Updated to match service name 'db'
       - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
       - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
       - ME_CONFIG_BASICAUTH_USERNAME=admin
       - ME_CONFIG_BASICAUTH_PASSWORD=tribes
     ports:
       - '8081:8081'
-    volumes:
-      - ./data:/data/db
 
   node-app:
     build: .
-    container_name: node-app
     ports:
       - '3000:3000'
     volumes:
@@ -43,7 +38,7 @@ services:
       - /app/node_modules
     environment:
       NODE_ENV: production
-      MONGO_URL: mongodb://admin:pass@database:27017/auth?authSource=admin
+      MONGO_URL: mongodb://admin:pass@db:27017/auth?authSource=admin  # Updated to use 'db'
     depends_on:
       - db
     networks:
