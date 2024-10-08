@@ -4,7 +4,7 @@ import { DatabaseService } from './database.service';
 
 @Module({
     imports: [
-        MongooseModule.forRoot(process.env.MONGO_URL)
+        MongooseModule.forRoot(process.env.MONGO_URL),
     ],
     providers: [DatabaseService],
 })
