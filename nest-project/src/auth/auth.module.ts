@@ -5,9 +5,11 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule} from "@nestjs/config";
 import {UsersService} from "../users/users.service";
 import {AccessTokenStrategy, RefreshTokenStrategy} from "./strategy";
+import {DatabaseAbstractionModule} from "../database-abstraction/database-abstraction.module";
+import {DBType} from "../database-abstraction/types/enums/database-type.enum";
 
 @Module({
-    imports: [JwtModule.register({}), ConfigModule],
+    imports: [JwtModule.register({}), ConfigModule, DatabaseAbstractionModule.register(DBType.MONGODB),],
     controllers: [AuthController],
     providers: [
         AuthService,

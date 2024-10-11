@@ -1,48 +1,57 @@
-import {Injectable, NotFoundException, UnprocessableEntityException} from '@nestjs/common';
-import {CreateUserDto} from './dto/create-user.dto';
+import {
+    HttpException,
+    HttpStatus,
+    Inject,
+    Injectable,
+    NotFoundException,
+    UnprocessableEntityException
+} from '@nestjs/common';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {IUser} from "./interfaces/user.interface";
 import {ReplaceUserDto} from "./dto/replace-user.dto";
 import {IUpdateUserPartialInput} from "./interfaces/update-user-partial-input.interface";
+import {IAbstractDatabaseService} from "../database-abstraction/types/database-abstract-service.interface";
+import {MongooseModelsMapEnum} from "../database-abstraction/types/enums/mongodb-model-map.enum";
+import {ICreateUser} from "./interfaces/create-user.interface";
 
+//TODO I will delete it as soon as I transfer all the methods to DB logic
 const users: IUser[] = [];
 
 @Injectable()
 export class UsersService {
+    constructor(
+        @Inject('DATABASE_CONNECTION') private dbService: IAbstractDatabaseService,
+    ) {
+    }
+
     private currentId = 1;
 
-    create(createUserDto: CreateUserDto): IUser {
-        const newUser: IUser = {
+    async create(createUser: ICreateUser): Promise<IUser> {
+        return this.dbService.create(MongooseModelsMapEnum.USER, {
             id: this.currentId++,
-            ...createUserDto,
-        };
-
-        users.push(newUser);
-
-        return newUser;
+            ...createUser,
+        });
     }
 
-    findAll(): IUser[] {
-        return users;
+    async findAll(): Promise<IUser[]> {
+        return this.dbService.findAll(MongooseModelsMapEnum.USER);
     }
 
-    findOneById(id: number): IUser {
-        const user = users.find(user => user.id === id);
+    async findOneById(id: number): Promise<IUser> {
+        const user = await this.dbService.findOneById(MongooseModelsMapEnum.USER, id);
 
         if (!user) {
-            throw new NotFoundException(`User with id #${id} not found`);
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
         return user;
     }
 
-    findOneByFirstName(firstName: string): IUser {
-        const user = users.find((user) => user.firstName === firstName);
+    async findOneByFirstName(firstName: string): Promise<IUser> {
+        const user = await this.dbService.findOneByFirstName(MongooseModelsMapEnum.USER, firstName);
 
         if (!user) {
-            throw new NotFoundException(
-                `User with first name ${firstName} not found`,
-            );
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
         return user;
     }
@@ -51,8 +60,8 @@ export class UsersService {
         return users.find((user) => user.firstName === firstName);
     }
 
-    findOneAndUpdate(id: number, updateBody: IUpdateUserPartialInput): IUser {
-        const user = this.findOneById(id);
+    async findOneAndUpdate(id: number, updateBody: IUpdateUserPartialInput): Promise<IUser> {
+        const user = await this.findOneById(id);
         return this.updatePartially(user.id, updateBody);
     }
 
@@ -68,7 +77,7 @@ export class UsersService {
             );
         }
 
-        const updatedUser = { ...users[userIndex], ...dto };
+        const updatedUser = {...users[userIndex], ...dto};
         users[userIndex] = updatedUser;
 
         return updatedUser;
@@ -108,18 +117,13 @@ export class UsersService {
         return updatedUser;
     }
 
-    remove(id: number): object {
-        const userIndex = users.findIndex(user => user.id === id);
+    async remove(id: number): Promise<IUser> {
+        const replaceUser = await this.dbService.replaceById(MongooseModelsMapEnum.USER, id);
 
-        if (userIndex === -1) {
-            throw new NotFoundException(`User with id #${id} not found`);
+        if (!replaceUser) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
 
-        users.splice(userIndex, 1);
-
-        return {
-            status: 'success',
-            message: `User with id #${id} has been removed`
-        };
+        return replaceUser;
     }
 }
