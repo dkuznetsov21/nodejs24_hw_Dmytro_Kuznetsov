@@ -5,7 +5,7 @@ import {MongoDatabaseService} from "./mongodb.service";
 import {PostgresDatabaseService} from "./postgresdb.service";
 
 
-export function createDatabaseService(
+export function createDatabaseServiceFactory(
     dbType: DBType,
     configService: ConfigService,
 ): IAbstractDatabaseService {
