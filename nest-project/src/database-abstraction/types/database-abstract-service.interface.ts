@@ -5,14 +5,13 @@ export interface IAbstractDatabaseService {
 
     disconnect(): Promise<void>;
 
-    create(table: string, data: object): Promise<IUser>;
+    create(table: string, data: IUser): Promise<IUser>;
 
-    findOneById(table: string, data: number): Promise<IUser>;
+    findOneById(table: string, data: number): Promise<IUser | null>;
 
-    findOneByFirstName(table: string, data: string): Promise<IUser>;
+    findOneByFirstName(table: string, data: string): Promise<IUser | null>;
 
     findAll(table: string): Promise<IUser[]>;
 
-    //TODO I don't understand what of type i should Promise here
-    replaceById(table: string, data: number): Promise<IUser>
+    replaceById(table: string, id: number): Promise<IUser | null>
 }

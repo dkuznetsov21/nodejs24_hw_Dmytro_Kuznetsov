@@ -7,14 +7,13 @@ export abstract class AbstractDatabaseService
 
     abstract disconnect(): Promise<void>;
 
-    abstract create(table: string, data: object): Promise<IUser>;
+    abstract create(table: string, data: IUser): Promise<IUser>;
 
-    abstract findOneById(table: string, data: number): Promise<IUser>;
+    abstract findOneById(table: string, data: number): Promise<IUser | null>;
 
-    abstract findOneByFirstName(table: string, data: string): Promise<IUser>;
+    abstract findOneByFirstName(table: string, data: string): Promise<IUser | null>;
 
     abstract findAll(table: string): Promise<IUser[]>;
 
-    //TODO I don't understand what of type i should Promise here
-    abstract replaceById(table: string, data: number): Promise<IUser>
+    abstract replaceById(table: string, id: number): Promise<IUser | null>
 }

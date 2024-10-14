@@ -29,7 +29,7 @@ export class MongoDatabaseService extends AbstractDatabaseService {
         this.logger.log('Disconnected from MongoDB');
     }
 
-    async create(table: MongooseModelsMapEnum, data: object): Promise<IUser> {
+    async create(table: MongooseModelsMapEnum, data: IUser): Promise<IUser> {
         const model = this.getModel(table);
         return model.create(data)
     }
@@ -39,22 +39,25 @@ export class MongoDatabaseService extends AbstractDatabaseService {
         return model.find().exec();
     }
 
-    async findOneById(table: MongooseModelsMapEnum, id: number): Promise<any> {
+    async findOneById(table: MongooseModelsMapEnum, id: number): Promise<IUser | null> {
         const model = this.getModel(table);
-        //TODO If i change Promise<any> above to Promise<IUser | null> i get an error
-        return model.findOne({id: id}).lean();
+        const user = await model.findOne({ id }).lean().exec();
+
+        return user as IUser | null;
     }
 
-    findOneByFirstName(table: MongooseModelsMapEnum, firstName: string): Promise<any> {
+    async findOneByFirstName(table: MongooseModelsMapEnum, firstName: string): Promise<IUser | null> {
         const model = this.getModel(table);
-        //TODO If i change Promise<any> above to Promise<IUser | null> i get an error
-        return model.findOne({firstName: firstName}).lean();
+        const user = await model.findOne({ firstName }).lean().exec();
+
+        return user as IUser | null;
     }
 
-    replaceById(table: MongooseModelsMapEnum, id: number): Promise<any> {
+    async replaceById(table: MongooseModelsMapEnum, id: number): Promise<IUser | null> {
         const model = this.getModel(table);
-        //TODO If i change Promise<any> above to Promise<IUser | null> i get an error
-        return model.findOneAndReplace({id: id}).lean();
+        const user = await model.findOneAndReplace({ id }, {}, { new: true }).lean().exec();
+
+        return user as IUser | null;
     }
 
     private getModel(table: MongooseModelsMapEnum): mongoose.Model<any> {
