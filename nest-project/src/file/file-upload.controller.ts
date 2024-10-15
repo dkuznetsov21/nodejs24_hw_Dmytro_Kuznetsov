@@ -1,30 +1,26 @@
 import {Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
-import * as path from 'path';
-import * as fs from 'fs';
 import {storage} from "./storage.config";
+import {FileUploadService} from "./file-upload.service";
 
 @Controller('file-upload')
 export class FileUploadController {
-    @Post('')
+    constructor(private readonly fileUploadService: FileUploadService) {
+    }
+
+    @Post('small')
     @UseInterceptors(FileInterceptor('file', {storage}))
     async uploadFile(@UploadedFile() file: Express.Multer.File) {
-        const filePath = path.join(__dirname, '..', 'uploads', file.originalname);
+        return file;
+    }
 
-        const readStream = fs.createReadStream(filePath);
-        const writeStream = fs.createWriteStream(filePath);
-
-        readStream.on('data', (chunk) => {
-            writeStream.write(chunk);
-        });
-
-        await new Promise((resolve, reject) => {
-            readStream.on('end', () => {
-                writeStream.end();
-                resolve(null);
-            });
-            readStream.on('error', reject);
-            writeStream.on('error', reject);
-        });
+    @Post('large')
+    @UseInterceptors(FileInterceptor('file', {
+        limits: {
+            fileSize: 300 * 1024 * 1024
+        }
+    }))
+    async uploadLargeFile(@UploadedFile() file: Express.Multer.File) {
+        return this.fileUploadService.uploadLargeFile(file)
     }
 }

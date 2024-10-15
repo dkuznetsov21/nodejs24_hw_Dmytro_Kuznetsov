@@ -1,29 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { createWriteStream } from 'fs';
-import { Writable } from 'stream';
-import { Express } from 'express';
-import { join } from 'path';
+import {HttpException, HttpStatus, Injectable, UploadedFile} from '@nestjs/common';
+import * as fs from "fs";
 
 @Injectable()
 export class FileUploadService {
-    async uploadFile(file: Express.Multer.File): Promise<void> {
-        const outputFilePath = join(__dirname, '..', 'uploads', file.originalname);
-        const writeStream = createWriteStream(outputFilePath);
+    async uploadLargeFile(@UploadedFile() file: Express.Multer.File) {
+        if (!file) {
+            throw new HttpException('File is require', HttpStatus.BAD_REQUEST)
+        }
 
-        const userWriteStream = new Writable({
-            objectMode: true,
-            write(chunk, encoding, callback) {
-                console.log("Writing User:", chunk);
+        const uploadDir = './uploads'
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir)
+        }
 
-                writeStream.write(JSON.stringify(chunk) + "\n", encoding, callback);
-            },
-            final(callback) {
-                console.log("All users have been written to the file.");
-                writeStream.end();
-                callback();
-            }
-        });
+        const filePath = `${uploadDir}/${Date.now()}-${file.originalname}`
 
-        writeStream.pipe(userWriteStream) //TODO тут с ретурном не работает
+        try {
+            const writeStream = fs.createWriteStream(filePath)
+
+            writeStream.write(file.buffer, () => {
+                return writeStream.end();
+            })
+
+            return new Promise((resolve, reject) => {
+                console.log('File upload successfully');
+
+                resolve({message: 'File upload successfully', path: filePath});
+
+                writeStream.on('error', (err) => {
+                    reject(new HttpException(
+                        `Upload failed: ${err.message}`,
+                        HttpStatus.INTERNAL_SERVER_ERROR))
+                })
+            })
+        } catch (err) {
+            console.log(err)
+
+            throw new HttpException(
+                `Error uploading file: ${err.message}`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+        }
     }
 }
