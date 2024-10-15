@@ -20,7 +20,7 @@ export class AuthService {
     }
 
     async signUp(body: ISignUpUserInput): Promise<ISignUpUserResponse> {
-        const { firstName, password, lastName, age, isStudent } = body;
+        const {firstName, password, lastName, age, isStudent } = body;
 
         this.logger.log(`Going to sign up new user with email: ${firstName}`);
 
@@ -35,7 +35,7 @@ export class AuthService {
         // Hash password
         const hash = await this.hashData(password);
 
-        const newUser = this.usersService.create({
+        const newUser = await this.usersService.create({
             firstName,
             password: hash,
             lastName,
@@ -54,7 +54,7 @@ export class AuthService {
     async signIn(body: ISignInUserInput): Promise<ISignInUserResponse> {
         const { firstName, password } = body;
 
-        const user = this.usersService.findOneByFirstName(firstName);
+        const user = await this.usersService.findOneByFirstName(firstName);
 
         if (!user) throw new BadRequestException('User does not exist');
 
@@ -111,7 +111,7 @@ export class AuthService {
     async updateRefreshToken(userId: number, refreshToken: string) {
         const hashedRefreshToken = await this.hashData(refreshToken);
 
-        this.usersService.findOneAndUpdate(userId, {
+        await this.usersService.findOneAndUpdate(userId, {
             refreshToken: hashedRefreshToken,
         });
     }
@@ -119,7 +119,7 @@ export class AuthService {
     async refreshTokens(userId: number, refreshToken: string) {
         this.logger.log(`Going to generate tokens for user with id: ${userId}`);
 
-        const user = this.usersService.findOneById(userId);
+        const user = await this.usersService.findOneById(userId);
 
         if (!user || !user.refreshToken)
             throw new ForbiddenException('Access Denied');

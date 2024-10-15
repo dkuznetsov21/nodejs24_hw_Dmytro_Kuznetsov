@@ -2,6 +2,9 @@ import { ISignUpUserInput } from '../interface/sign-up-user.interface';
 import { IsString, IsInt, IsBoolean } from 'class-validator';
 
 export class SignUpUserInputDto implements ISignUpUserInput {
+    @IsInt()
+    id: number;
+
     @IsString()
     firstName: string;
 
