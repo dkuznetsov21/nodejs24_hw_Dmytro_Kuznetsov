@@ -5,7 +5,9 @@ import { SignUpUserInputDto } from './dto/sign-up-user-input.dto';
 import {SignInUserInputDto} from "./dto/sign-in-user-input.dto";
 import {AccessTokenGuard} from "../guargs/access-token.guard";
 import {RefreshTokenGuard} from "../guargs/refresh-token.guard";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
