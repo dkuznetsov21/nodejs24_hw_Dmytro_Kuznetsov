@@ -4,7 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {ReplaceUserDto} from "./dto/replace-user.dto";
 import {
-  ApiOkResponse, ApiParam, ApiResponse,
+  ApiBearerAuth,
+  ApiOkResponse, ApiParam, ApiResponse, ApiSecurity,
   ApiTags
 } from "@nestjs/swagger";
 import {CreateUserResponseDto} from "./dto/create-user-response.dto";

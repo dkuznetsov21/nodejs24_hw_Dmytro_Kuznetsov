@@ -9,7 +9,7 @@ export const UserSchema = new mongoose.Schema({
     age: {type: Number, required: true},
     isStudent: {type: Boolean, required: true},
     accessToken: {type: Number, required: false},
-    refreshToken: {type: Number, required: false},
+    refreshToken: {type: String, required: false},
 });
 
 export const UserModel = mongoose.model(MongooseModelsMapEnum.USER, UserSchema);

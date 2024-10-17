@@ -56,13 +56,13 @@ export class UsersService {
         return user;
     }
 
-    findOneWithoutException(firstName: string): IUser {
-        return users.find((user) => user.firstName === firstName);
+    findOneWithoutException(firstName: string): Promise<IUser> {
+        return this.dbService.findOneByFirstName(MongooseModelsMapEnum.USER, firstName);
     }
 
-    async findOneAndUpdate(id: number, updateBody: IUpdateUser): Promise<IUser> {
+    async findOneAndUpdate(id: number, updateBody: IUpdateUser): Promise<IUpdateUserResponse> {
         const user = await this.findOneById(id);
-        return this.updatePartially(user.id, updateBody);
+        return this.update(user.id, updateBody);
     }
 
     updatePartially(id: number, dto: IUpdateUser): IUser {
