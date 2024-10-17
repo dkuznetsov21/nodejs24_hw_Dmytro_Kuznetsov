@@ -24,7 +24,7 @@ export class AuthService {
 
         this.logger.log(`Going to sign up new user with email: ${firstName}`);
 
-        const user = this.usersService.findOneWithoutException(firstName);
+        const user = await this.usersService.findOneWithoutException(firstName);
 
         if (user) {
             throw new BadRequestException(
@@ -71,7 +71,8 @@ export class AuthService {
     }
 
     async logout(userId: number) {
-        return this.usersService.findOneAndUpdate(userId, { refreshToken: null });
+        await this.usersService.findOneAndUpdate(userId, { refreshToken: null });
+        return {status: "success"}
     }
 
     async getTokens(userId: number, email: string) {

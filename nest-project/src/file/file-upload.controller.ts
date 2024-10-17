@@ -2,7 +2,9 @@ import {Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
 import {storage} from "./storage.config";
 import {FileUploadService} from "./file-upload.service";
+import {ApiTags} from "@nestjs/swagger";
 
+@ApiTags('File')
 @Controller('file-upload')
 export class FileUploadController {
     constructor(private readonly fileUploadService: FileUploadService) {
