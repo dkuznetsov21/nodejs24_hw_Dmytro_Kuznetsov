@@ -18,9 +18,6 @@ import {ICreateUserResponse} from "./interfaces/create-user-response.interface";
 import {IReplaceUserResponse} from "./interfaces/replace-user-response.interface";
 import {IUpdateUserResponse} from "./interfaces/update-user-response.interface";
 
-//TODO I will delete it as soon as I transfer all the methods to DB logic
-const users: IUser[] = [];
-
 @Injectable()
 export class UsersService {
     constructor(
@@ -63,24 +60,6 @@ export class UsersService {
     async findOneAndUpdate(id: number, updateBody: IUpdateUser): Promise<IUpdateUserResponse> {
         const user = await this.findOneById(id);
         return this.update(user.id, updateBody);
-    }
-
-    updatePartially(id: number, dto: IUpdateUser): IUser {
-        const userIndex = users.findIndex((user) => user.id === id);
-        if (userIndex === -1) {
-            throw new NotFoundException(`User with id ${id} not found`);
-        }
-
-        if (dto.hasOwnProperty('id')) {
-            throw new UnprocessableEntityException(
-                'Updating the "id" field is not allowed',
-            );
-        }
-
-        const updatedUser = {...users[userIndex], ...dto};
-        users[userIndex] = updatedUser;
-
-        return updatedUser;
     }
 
     async replace(id: number, replaceUser: IReplaceUser): Promise<IReplaceUserResponse> {
