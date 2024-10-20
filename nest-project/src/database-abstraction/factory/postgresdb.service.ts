@@ -8,7 +8,9 @@ import {ConfigService} from '@nestjs/config';
 import {DBType} from '../types/enums/database-type.enum';
 import {Promise} from "mongoose";
 import {IUser} from "../../users/interfaces/user.interface";
+import {ReplaceUserDto} from "../../users/dto/replace-user.dto";
 import * as console from "console";
+import {IUpdateUser} from "../../users/interfaces/update-user.interface";
 
 @Injectable()
 export class PostgresDatabaseService extends AbstractDatabaseService {
@@ -70,6 +72,18 @@ export class PostgresDatabaseService extends AbstractDatabaseService {
     }
 
     replaceById(table: string, data: number): Promise<IUser> {
+        return Promise.resolve(undefined);
+    }
+
+    findByIdAndDelete(table: string, id: number): Promise<IUser | null> {
+        return Promise.resolve(undefined);
+    }
+
+    findByIdAndReplace(table: string, id: number, data: ReplaceUserDto): Promise<IUser | null> {
+        return Promise.resolve(undefined);
+    }
+
+    findByIdAndUpdate(table: string, id: number, data: IUpdateUser): Promise<IUser | null> {
         return Promise.resolve(undefined);
     }
 }
